@@ -1,4 +1,4 @@
-use ('Usuarios');
+use('Usuarios');
 
 /* db.Usuarios.insertMany([
   {
@@ -199,23 +199,23 @@ use ('Usuarios');
 // OPERADORES DE COMPARACIÓN
 // $gt -> mayor que
 db.Usuarios.find({ edad: { $gt: 30 } });
- 
+
 // $lt -> menor que
 db.Usuarios.find({ edad: { $lt: 30 } });
- 
+
 // $eq -> Igual a
 db.Usuarios.find({ edad: 30 });
 db.Usuarios.find({ edad: { $eq: 30 } });
- 
+
 // $ne -> Diferente a
 db.Usuarios.find({ edad: { $ne: 30 } });
- 
+
 // $gte -> Mayor o igual que
 db.Usuarios.find({ edad: { $gte: 30 } });
- 
+
 // $lte -> Menor o igual que
 db.Usuarios.find({ edad: { $lte: 30 } });
- 
+
 // OPERADORES LÓGICOS
 // $and -> Debe de cumplir las dos condiciones
 db.Usuarios.find({
@@ -226,7 +226,7 @@ db.Usuarios.find({
     { "direccion.codigoPostal": "28013" },
   ],
 });
- 
+
 // $or -> Debe de cumplir una de las condiciones
 db.Usuarios.find({
   $or: [
@@ -236,7 +236,7 @@ db.Usuarios.find({
     { "direccion.codigoPostal": "28013" },
   ],
 });
- 
+
 // $nor -> No cumple ninguna de las condiciones
 db.Usuarios.find({
   $nor: [
@@ -253,25 +253,25 @@ db.Usuarios.find({
     { edad: { $gt: 20 } },
     { ciudad: "Madrid" },
   ],
-}, 
-{ 
-  _id: 0,
-  nombre: 1, 
-  ciudad: 1,
-}
+},
+  {
+    _id: 0,
+    nombre: 1,
+    ciudad: 1,
+  }
 );
-db.Usuarios.find({ciudad: 'Madrid', edad: { $gt: 20 }}).count();
+db.Usuarios.find({ ciudad: 'Madrid', edad: { $gt: 20 } }).count();
 // Buscar usuarios mayores de 40 años o que tengan interés en "cine"
 db.Usuarios.find({
   $or: [
     { edad: { $gt: 40 } },
     { intereses: { $all: ["cine"] } },
   ],
-}, 
-{ 
-  nombre: 1, 
-  ciudad: 1,
-}
+},
+  {
+    nombre: 1,
+    ciudad: 1,
+  }
 );
 
 
@@ -280,7 +280,7 @@ db.Usuarios.find({
 db.Usuarios.find({
   intereses: { $all: ["cine"] },
 });
- 
+
 // $elemMatch -> Para buscar en un array de objetos
 db.Usuarios.find({
   notas: {
@@ -290,15 +290,47 @@ db.Usuarios.find({
     },
   },
 });
- 
+
 // Ejemplo con notación de punto
 db.Usuarios.find({
   "notas.puntaje": 89,
 });
- 
+
 // $size -> Obtiene la cantidad de valores del array
- 
+
 db.Usuarios.find({
   intereses: { $size: 2 },
 });
- 
+
+// Buscar usuarios que no tengan "viajar" como interés
+db.Usuarios.find(
+  {
+    $nor:
+      [{ intereses: 'viajar' },]
+  }
+)
+// Más correcta. $nor y demás si es más de una condición
+db.Usuarios.find({
+  intereses: {
+    $not: {
+      $all: ["viajar"],
+    },
+  },
+});
+
+// Buscar usuarios que tengan el interés "deportes" y una nota mayor o igual a 90
+db.Usuarios.find(
+  {
+    $and:
+      [
+        { intereses: { $all: ["deportes"] } },
+        { "notas.puntaje": { $gte: 90 } },
+      ]
+  },
+);
+
+db.Usuarios.find({
+  intereses: { $all: ["deportes"] },
+  "notas.puntaje": { $gte: 90 },
+}
+);
