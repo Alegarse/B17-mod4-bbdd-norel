@@ -906,7 +906,6 @@ db.animales.aggregate(
 
 // 23. Encontrar el promedio del precio de consultas por tipo de animal, 
 // mostrando solo dos decimales.
-db.animales.find();
 db.animales.aggregate(
   {
     $group: {
